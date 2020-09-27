@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-09-27T16:35:08Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template App SPEEDTEST by Ookla Service</template>
+            <name>Template App SPEEDTEST by Ookla Service</name>
+            <description>OOKLA SPEEDTEST Template monitors services are running. Do NOT put checks which are not unique to OOKLA in this template. Created by iXiAZ</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Speedtest.net</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>HTTP Access</name>
+                    <type>SIMPLE</type>
+                    <key>net.tcp.service[http,,{$OKHTTPPORT}]</key>
+                    <delay>30</delay>
+                    <value_type>FLOAT</value_type>
+                    <description>8080/tcp for HTTP Access. Ideally you would be using HTTPS to connect to the other one for securitry reasons of course.</description>
+                    <applications>
+                        <application>
+                            <name>Speedtest.net</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>{HOST.NAME} has no HTTP WebUI on TCP/{$OKHTTPPORT}</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Service is running</name>
+                    <key>proc.num[,,,OoklaServer]</key>
+                    <delay>3s</delay>
+                    <history>1w</history>
+                    <applications>
+                        <application>
+                            <name>Speedtest.net</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>SPEEDTEST service is down on {HOST.NAME}</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$OKDOMAIN}</macro>
+                </macro>
+                <macro>
+                    <macro>{$OKHTTPPORT}</macro>
+                    <value>8080</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
